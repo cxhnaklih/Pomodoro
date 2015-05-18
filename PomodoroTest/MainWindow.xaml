@@ -1,0 +1,30 @@
+﻿<Window  x:Name="back" x:Class="PomodoroTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:PomodoroTest"
+        Title="{Binding  Path=TimeRemaining, StringFormat=Pomodoro: {0} , Mode=TwoWay}" Height="350" Width="525" Background="Black" Icon="pomodoro.ico"  >
+    <Window.Resources>
+        <local:PomodoroTimer x:Key="myTimer"></local:PomodoroTimer>
+    </Window.Resources>
+    <Window.DataContext>
+        <StaticResourceExtension ResourceKey="myTimer"/>
+    </Window.DataContext>
+
+    <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="txtTitle" FontSize="30" Text="Pomodoro Timer"  Foreground="White" />
+                <Viewbox Grid.Row="1" Stretch="Uniform">
+            <TextBlock x:Name="txtTimer" TextWrapping="Wrap" Text="{Binding  Path=TimeRemaining, Mode=TwoWay }" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="White"  />
+                </Viewbox>
+                <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" >
+            <Button Content="Pomodoro"  Width="auto" Name="btnStart"  Click="btnStart_Click"/>
+                    <Button Content="Stop" Name="btnStop" Click="btnStop_Click"/>
+            <Button Content="Short Break" Width="auto" x:Name="btnShortBreak" Click="btnShortBreak_Click" Margin="5,5,5,4.6" />
+        </StackPanel>
+            </Grid>
+       
+</Window>
