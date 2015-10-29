@@ -12,7 +12,21 @@ namespace PomodoroTest
         private TimeSpan _timeRemaining;
         private System.Timers.Timer _timer = new System.Timers.Timer();
         private TimeSpan _tickInterval = new TimeSpan(0, 0, 1);
-        public event EventHandler TimerCompleted;
+        private PomodoroTimeSpanType _currentType = PomodoroTimeSpanType.FullPomodoro;
+        private DateTime _lastPomodoro = PomodoroTimer.UnknownLastPomodoro;
+        
+
+        public static DateTime UnknownLastPomodoro
+        {
+            get
+            {
+                return new DateTime(1970, 01, 01);
+            }
+        }
+
+        public event EventHandler<TimerCompletedEventArgs> PomodoroCompleted;
+        
+
 
         public enum PomodoroTimeSpanType
         {
@@ -25,9 +39,12 @@ namespace PomodoroTest
         public PomodoroTimer(
         )
         {
-            _timeRemaining = new TimeSpan(0, 25, 0);
-             _timer.Elapsed += _timer_Elapsed;
+            //_timeRemaining = getTimeSpan(PomodoroTimeSpanType.FullPomodoro);
+            _timeRemaining = new TimeSpan(0,0,0);
+            _timer.Elapsed += _timer_Elapsed;
             _timer.Interval = _tickInterval.TotalMilliseconds;
+            
+
             OnPropertyChanged("TimeRemaining");
             //_timeRemaining = span;
         }
@@ -45,24 +62,31 @@ namespace PomodoroTest
                 onTimerCompleted();
             }
         }
+
         public void Start(PomodoroTimeSpanType spanType)
         {
-            switch(spanType)
-            {
-                case PomodoroTimeSpanType.FullPomodoro:
-                    default:
-                    _timeRemaining = new TimeSpan(0,25,0);
-                    break;
-                case PomodoroTimeSpanType.LongBreak:
-                    _timeRemaining = new TimeSpan(0,10,0);
-                    break;
-                case PomodoroTimeSpanType.ShortBreak:
-                    _timeRemaining = new TimeSpan(0, 5,0);
-                    break;
-            }
-
+            _currentType = spanType;
+            _timeRemaining = getTimeSpan(spanType);
+            _timer.Interval = _tickInterval.TotalMilliseconds;
             OnPropertyChanged("TimeRemaining");
             _timer.Start();
+        }
+
+        private TimeSpan getTimeSpan(PomodoroTimeSpanType spanType)
+        {
+            switch (spanType)
+            {
+                case PomodoroTimeSpanType.FullPomodoro:
+                default:
+                    return new TimeSpan(0,25,0);
+                    
+                case PomodoroTimeSpanType.LongBreak:
+                    return  new TimeSpan(0, 10, 0);
+                    
+                case PomodoroTimeSpanType.ShortBreak:
+                    return new TimeSpan(0, 5, 0);
+                    
+            }
         }
 
         public void Stop()
@@ -84,6 +108,15 @@ namespace PomodoroTest
             }
         }
 
+        public DateTime LastPomodoro
+        {
+            get
+            {
+                return _lastPomodoro;
+            }
+        }
+
+      
         protected void OnPropertyChanged(string propertyName)
         {
             if(PropertyChanged != null )
@@ -97,11 +130,14 @@ namespace PomodoroTest
         protected void onTimerCompleted()
         {
             System.Media.SystemSounds.Beep.Play();
-            
-
-            if(TimerCompleted != null)
+            if (_currentType == PomodoroTimeSpanType.FullPomodoro)
             {
-                TimerCompleted(this, new EventArgs());
+                _lastPomodoro = DateTime.Now;
+                OnPropertyChanged("LastPomodoro");
+                if (PomodoroCompleted != null)
+                {
+                    PomodoroCompleted(this, new TimerCompletedEventArgs(getTimeSpan(_currentType)));
+                }
             }
         }
     }
