@@ -1,7 +1,7 @@
-﻿<Application x:Class="PomodoroTest.App"
+﻿<Application x:Class="Naklih.Com.Pomodoro.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PomodoroTest"
+             xmlns:local="clr-namespace:Naklih.Com.Pomodoro"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary Source="PomodoroDictionary.xaml"></ResourceDictionary>

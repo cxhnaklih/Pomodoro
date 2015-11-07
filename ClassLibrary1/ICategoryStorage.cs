@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PomodoroTest
+namespace Naklih.Com.Pomodoro.ClassLib
 {
-    public static class Constants
+    public interface ICategoryStorage
     {
-        public static string APPLICATION_NAME = "Pomodoro Timer";
-
     }
 }

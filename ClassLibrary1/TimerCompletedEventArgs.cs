@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using System.IO.Abstractions;
 
-namespace PomodoroTest
+namespace Naklih.Com.Pomodoro.ClassLib
 {
     public class TimerCompletedEventArgs: EventArgs
     {

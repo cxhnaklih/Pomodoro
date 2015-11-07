@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using Naklih.Com.Pomodoro.ClassLib;
 
-namespace PomodoroTest
+
+namespace Naklih.Com.Pomodoro
 {
     public class PomodoroTitleTypeConverter : IMultiValueConverter
     {

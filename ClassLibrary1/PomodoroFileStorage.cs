@@ -7,16 +7,49 @@ using System.IO;
 using System.IO.Abstractions;
 using System.ComponentModel;
 
-namespace PomodoroTest
+namespace Naklih.Com.Pomodoro.ClassLib
 {
     public class PomodoroFileStorage : IProgressStorage
     {
-        protected string _filename= "PomodoroData.csv";
-        protected string _filePath = ";";
+        
+        protected string _fileName= "";
+        protected string _directoryName = "";
+        protected string _filePath = "";
         protected int _pomodorosToday = 0;
         protected readonly IFileSystem _fileSystem;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+
+        public PomodoroFileStorage() : this(new FileSystem())
+        {
+        }
+
+        public PomodoroFileStorage(IFileSystem fileSystem) : this(Constants.DEFAULT_FILE_STORAGE_FILENAME, Constants.DEFAULT_FILE_STORAGE_DIRECTORY, fileSystem)
+        {
+        }
+
+        public PomodoroFileStorage(string filename): this(filename,new FileSystem())
+        {
+        }
+
+        public PomodoroFileStorage(string filename, IFileSystem fileSystem) : this(filename, Constants.DEFAULT_FILE_STORAGE_DIRECTORY, fileSystem)
+        {
+        }
+
+        public PomodoroFileStorage(string filename, string directoryName) : this(filename, directoryName , new FileSystem())
+        {
+        }
+        
+        public PomodoroFileStorage(string fileName, string directoryName, IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+            _directoryName = directoryName;
+            _fileName = fileName;
+            _filePath = FindStorageFile(fileName);
+            loadFile(_filePath, true);
+            
+        }    
 
         protected void OnPropertyChanged(string propertyName)
         {
@@ -26,34 +59,9 @@ namespace PomodoroTest
             }
         }
 
-        
-        public PomodoroFileStorage(string filename): this(new FileSystem())
-        {
-            _filename = filename;
-        }
-
-        public PomodoroFileStorage(string filename, IFileSystem fileSystem) : this(fileSystem)
-        {
-            _filename = filename;
-        }
-
-        public PomodoroFileStorage():this(new FileSystem())
-        {
-        }
-
-
-        public PomodoroFileStorage(IFileSystem filesystem)
-        {
-            _fileSystem = filesystem;
-
-            _filePath = FindStorageFile(_filename);
-            loadFile(_filePath, true);
-
-        }
-
         protected virtual string FindStorageFile(string filename)
         {
-            DirectoryInfoBase dirInfo = _fileSystem.DirectoryInfo.FromDirectoryName(_fileSystem.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Constants.APPLICATION_NAME));
+            DirectoryInfoBase dirInfo = _fileSystem.DirectoryInfo.FromDirectoryName(_directoryName);
             if (!dirInfo.Exists)
                 dirInfo.Create();
 
@@ -126,7 +134,7 @@ namespace PomodoroTest
         {
             get
             {
-                return _filename;
+                return _fileName;
             }
         }
         public int PomodorosToday
@@ -134,6 +142,15 @@ namespace PomodoroTest
             get
             {
                 return _pomodorosToday;
+            }
+        }
+
+        public string StorageLocation
+        {
+            get
+            {
+
+                return _fileSystem.FileInfo.FromFileName(_filePath).Directory.FullName;
             }
         }
 

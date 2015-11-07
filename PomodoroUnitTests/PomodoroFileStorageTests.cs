@@ -6,22 +6,23 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-using PomodoroTest;
+using Naklih.Com.Pomodoro;
+using Naklih.Com.Pomodoro.ClassLib;
 
 
-namespace PomodoroUnitTests
+namespace Naklih.Com.Pomodoro.UnitTests
 {
     [TestFixture]
     public class PomodoroFileStorageTests
     {
         [Test]
         public void PomodoroFileStorage_NoFileNameSuppliedButFileExists_LoadsFileReports1Pomodoro()
-        {
-
-            var fileSystem = new MockFileSystem(new Dictionary<string, MockFileData>
-            {
-                { @"C:\Users\ChrisH\AppData\Roaming\Pomodoro Timer\PomodoroData.csv", new MockFileData("07 Oct 2015, 1") }
-            }
+        {           
+            string fileName = System.IO.Path.Combine(Constants.DEFAULT_FILE_STORAGE_DIRECTORY, Constants.DEFAULT_FILE_STORAGE_FILENAME);
+            var fileSystem =  new MockFileSystem(new Dictionary<string, MockFileData>
+                    {
+                        { fileName, new MockFileData(string.Format("{0:yyyyMMdd}, 1", DateTime.Now.Date)) }
+                    }
             );
             PomodoroFileStorage fs = new PomodoroFileStorage(fileSystem);
 

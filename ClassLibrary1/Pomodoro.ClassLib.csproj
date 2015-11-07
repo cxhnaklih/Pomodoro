@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{84A732AC-0643-4747-95FC-E337C52146A1}</ProjectGuid>
+    <ProjectGuid>{AFAAF1BF-8D91-4DCA-8A47-A6CC0E81A342}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Naklih.Com.Pomodoro.UnitTests</RootNamespace>
-    <AssemblyName>Naklih.Com.Pomodoro.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>Naklih.Com.Pomodoro.ClassLib</RootNamespace>
+    <AssemblyName>Naklih.Com.Pomodoro.ClassLib</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,18 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Abstractions, Version=2.0.0.118, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Abstractions.2.0.0.118\lib\net40\System.IO.Abstractions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IO.Abstractions.TestingHelpers, Version=2.0.0.118, Culture=neutral, PublicKeyToken=d480b5b72fb413da, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Abstractions.TestingHelpers.2.0.0.118\lib\net40\System.IO.Abstractions.TestingHelpers.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -52,18 +45,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PomodoroFileStorageTests.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="ICategoryStorage.cs" />
+    <Compile Include="IProgressStorage.cs" />
+    <Compile Include="PomodoroDetailedFileStorage.cs" />
+    <Compile Include="PomodoroFileStorage.cs" />
+    <Compile Include="PomodoroTimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\Pomodoro.ClassLib.csproj">
-      <Project>{afaaf1bf-8d91-4dca-8a47-a6cc0e81a342}</Project>
-      <Name>Pomodoro.ClassLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PomodoroTest\Pomodoro.csproj">
-      <Project>{7f4da4fd-07f8-4667-80d8-1b68acdcef59}</Project>
-      <Name>Pomodoro</Name>
-    </ProjectReference>
+    <Compile Include="TimerCompletedEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

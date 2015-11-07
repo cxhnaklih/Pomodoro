@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-namespace PomodoroTest
+namespace Naklih.Com.Pomodoro.ClassLib
 {
     public class PomodoroTimer : INotifyPropertyChanged
     {
@@ -24,7 +24,7 @@ namespace PomodoroTest
             }
         }
 
-        public event EventHandler<TimerCompletedEventArgs> PomodoroCompleted;
+        public event EventHandler<TimerCompletedEventArgs> TimerCompleted;
         
 
 
@@ -116,6 +116,14 @@ namespace PomodoroTest
             }
         }
 
+
+        public PomodoroTimeSpanType TimerMode
+        {
+            get
+            {
+                return _currentType;
+            }
+        }
       
         protected void OnPropertyChanged(string propertyName)
         {
@@ -134,11 +142,12 @@ namespace PomodoroTest
             {
                 _lastPomodoro = DateTime.Now;
                 OnPropertyChanged("LastPomodoro");
-                if (PomodoroCompleted != null)
-                {
-                    PomodoroCompleted(this, new TimerCompletedEventArgs(getTimeSpan(_currentType)));
-                }
             }
+                if (TimerCompleted != null)
+                {
+                    TimerCompleted(this, new TimerCompletedEventArgs(getTimeSpan(_currentType)));
+                }
+            
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,8 +16,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Naklih.Com.Pomodoro.ClassLib;
 
-namespace PomodoroTest
+namespace Naklih.Com.Pomodoro
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -25,6 +28,8 @@ namespace PomodoroTest
         PomodoroTimer _timer;
         IProgressDetailStorage _storage;
         private readonly SynchronizationContext _syncContext;
+        ObservableCollection<String> _categoryItems;
+
         
 
         public MainWindow()
@@ -32,33 +37,84 @@ namespace PomodoroTest
             InitializeComponent();
             findTimerResource();
             findStorageResource();
-            _timer.PomodoroCompleted += _timer_PomodoroCompleted;
+            _timer.TimerCompleted += _timer_TimerCompleted;
             _syncContext = SynchronizationContext.Current;
-            
+            _categoryItems = getCategoryItems();
+            //cboCategory.ItemsSource = getCategoryItems();
+            //cboCategory.ItemBindingGroup.UpdateSources() 
+            cboCategory.SelectedIndex = 1;
         }
 
-                    
-                
-        private void _timer_PomodoroCompleted(object sender, TimerCompletedEventArgs e)
+
+        public ObservableCollection<String> CategoryItems
         {
-            _syncContext.Post(o=> { PomodoroCompleted(e.StartTime, e.EndTime); }, null);
+            get
+            {
+                return _categoryItems;
+            }
+        }
+
+        private ObservableCollection<String> getCategoryItems()
+        {
+            if(_categoryItems == null)
+            {
+                _categoryItems = new ObservableCollection< string> { "Office", "Home" };
+
+            }
+            return _categoryItems;
+        }
+
+       
+
+       
+
+       
+        public string NewItem
+        {
+            set
+            {
+                if (this.cboCategory.SelectedItem != null)
+                {
+                    return;
+                }
+                if (!string.IsNullOrEmpty(value))
+                {
+                    _categoryItems.Add(value);
+                    this.cboCategory.SelectedItem = value;
+                    this.cboCategory.IsEditable = false;
+                }
+            }
+        }
+
+
+        private void _timer_TimerCompleted(object sender, TimerCompletedEventArgs e)
+        {
+            _syncContext.Post(o=> { TimerCompleted(e.StartTime, e.EndTime); }, null);
 
 
         }
 
 
-        private void PomodoroCompleted(DateTime startTime, DateTime endTime)
+        private void TimerCompleted(DateTime startTime, DateTime endTime)
         {
             string category = "Unknown";
             string description = "Unknown";
 
             enableButtons();
-            if (cboCategory.SelectedIndex != -1)
-                category = cboCategory.Text;
-            if (txtDetail.Text.Length > 0)
-                description = txtDetail.Text;
+            if (_timer.TimerMode == PomodoroTimer.PomodoroTimeSpanType.FullPomodoro)
+            {
+                if (cboCategory.Text.Length > 0)
+                    category = cboCategory.Text;
+                if (txtDetail.Text.Length > 0)
+                    description = txtDetail.Text;
 
-            _storage.RecordSuccessfulPomodoro(startTime, endTime, category, description);
+                _storage.RecordSuccessfulPomodoro(startTime, endTime, category, description);
+            }
+        }
+
+        private void saveCategories()
+        {
+            MessageBox.Show(cboCategory.Items.Count.ToString());
         }
 
 
@@ -117,20 +173,8 @@ namespace PomodoroTest
 
         private void btnDetails_Click(object sender, RoutedEventArgs e)
         {
-            PomodoroDetails x = new PomodoroDetails();
-            //x.WindowStartupLocation = WindowStartupLocation.Manual;
-            Point relativePoint = ((Button)sender).PointToScreen(new Point(0,0));
-            PresentationSource source = PresentationSource.FromVisual(this);
-            Point windowPoint = source.CompositionTarget.TransformFromDevice.Transform(relativePoint);
-            Button btn = (Button)sender;
-            
-            //Point relativePoint = btn.TransformToAncestor(this).Transform(new Point(this.Left, this.Top));
-            
-            x.Left = windowPoint.X ;
-            x.Top = windowPoint.Y+btn.ActualHeight;
-            //if(x.Top + x.ActualHeight > Scree)
-            
-            x.ShowDialog();
+             
+            Process.Start(_storage.StorageLocation);
         }
 
         private void btnGo_Click(object sender, RoutedEventArgs e)
@@ -156,12 +200,19 @@ namespace PomodoroTest
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            this.cboCategory.IsEditable = true;
+            this.cboCategory.ActivateEditMode();
+            //this.cboCategory.IsEditable = true;
+            
+            
+           
         }
 
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
-            this.cboCategory.IsEditable = true;
+            this.cboCategory.IsEditable = false;
+            _categoryItems.Remove(this.cboCategory.Text);
         }
+
+       
     }
 }
