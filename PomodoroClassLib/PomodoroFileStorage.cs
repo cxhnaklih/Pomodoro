@@ -11,12 +11,8 @@ namespace Naklih.Com.Pomodoro.ClassLib
 {
     public class PomodoroFileStorage : IProgressStorage
     {
-        
-        protected string _fileName= "";
-        protected string _directoryName = "";
-        protected string _filePath = "";
-        protected int _pomodorosToday = 0;
-        protected readonly IFileSystem _fileSystem;
+        BasicFileStorage _storage;
+        protected int _pomodorosToday = 0;       
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -43,11 +39,8 @@ namespace Naklih.Com.Pomodoro.ClassLib
         
         public PomodoroFileStorage(string fileName, string directoryName, IFileSystem fileSystem)
         {
-            _fileSystem = fileSystem;
-            _directoryName = directoryName;
-            _fileName = fileName;
-            _filePath = FindStorageFile(fileName);
-            loadFile(_filePath, true);
+            _storage = new BasicFileStorage(fileName, directoryName, fileSystem);
+            loadFile( true);
             
         }    
 
@@ -59,23 +52,11 @@ namespace Naklih.Com.Pomodoro.ClassLib
             }
         }
 
-        protected virtual string FindStorageFile(string filename)
-        {
-            DirectoryInfoBase dirInfo = _fileSystem.DirectoryInfo.FromDirectoryName(_directoryName);
-            if (!dirInfo.Exists)
-                dirInfo.Create();
+       
 
-            FileInfoBase fileInfo = _fileSystem.FileInfo.FromFileName(_fileSystem.Path.Combine(dirInfo.FullName, filename));
-            if (!fileInfo.Exists)
-            {
-                fileInfo.CreateText();
-            }
-            return _fileSystem.Path.Combine(dirInfo.FullName, filename);
-        }
-
-        private string[] loadFile(string filePath, bool setPomodoroCount)
+        private string[] loadFile( bool setPomodoroCount)
         {
-            string[] lines = _fileSystem.File.ReadAllLines(filePath);
+            string[] lines = _storage.GetAllLines();
             bool lastLineIsToday = false;
 
             string lastLine = "";
@@ -100,10 +81,10 @@ namespace Naklih.Com.Pomodoro.ClassLib
                 }
             }
 
-            if(lastLineIsToday)
+            if(lastLineIsToday)// Special Treatment for today's line
             {
                 string[] result = new string[lines.Count()-1];
-                Array.Copy(lines, 0, result, 0, lines.Count() - 1);
+                Array.Copy(lines, 0, result, 0, lines.Count() - 1);// remove the last line  from our array as we will update the count.
                 return result;
             }
             else
@@ -113,28 +94,24 @@ namespace Naklih.Com.Pomodoro.ClassLib
             
         }
 
-        public virtual void SaveFile()
+        public void SaveFile()
         {
             List<string> lines = new List<string>();
-            lines.AddRange(loadFile(_filePath, false));
+            lines.AddRange(loadFile(false));
 
             //format and add the latest count
             string newLine = string.Format("{0:yyyyMMdd},{1}", DateTime.Now.Date, this.PomodorosToday);
             lines.Add(newLine);
 
-            //delete existing file
-            _fileSystem.File.Delete(_filePath);
-
-            //write new File
-            _fileSystem.File.WriteAllLines(_filePath, lines);
+            _storage.SaveFile(lines);
             
         }
 
-        public string FileName
+        public BasicFileStorage Storage
         {
             get
             {
-                return _fileName;
+                return _storage;
             }
         }
         public int PomodorosToday
@@ -150,7 +127,7 @@ namespace Naklih.Com.Pomodoro.ClassLib
             get
             {
 
-                return _fileSystem.FileInfo.FromFileName(_filePath).Directory.FullName;
+                return _storage.StorageLocation;
             }
         }
 

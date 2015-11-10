@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicFileStorage.cs" />
+    <Compile Include="CategoryFileStorage.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ICategoryStorage.cs" />
     <Compile Include="IProgressStorage.cs" />

@@ -8,5 +8,7 @@ namespace Naklih.Com.Pomodoro.ClassLib
 {
     public interface ICategoryStorage
     {
+        void StoreCategories(List<string> categories);
+        List<string> RetrieveCategories();
     }
 }

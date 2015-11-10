@@ -140,7 +140,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\Pomodoro.ClassLib.csproj">
+    <ProjectReference Include="..\PomodoroClassLib\Pomodoro.ClassLib.csproj">
       <Project>{afaaf1bf-8d91-4dca-8a47-a6cc0e81a342}</Project>
       <Name>Pomodoro.ClassLib</Name>
     </ProjectReference>

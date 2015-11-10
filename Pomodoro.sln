@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PomodoroUnitTests", "Pomodo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{39581555-37E2-4796-9233-4FCCE862B876}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pomodoro.ClassLib", "ClassLibrary1\Pomodoro.ClassLib.csproj", "{AFAAF1BF-8D91-4DCA-8A47-A6CC0E81A342}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pomodoro.ClassLib", "PomodoroClassLib\Pomodoro.ClassLib.csproj", "{AFAAF1BF-8D91-4DCA-8A47-A6CC0E81A342}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

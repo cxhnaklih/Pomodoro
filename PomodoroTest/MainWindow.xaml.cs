@@ -27,6 +27,7 @@ namespace Naklih.Com.Pomodoro
     {
         PomodoroTimer _timer;
         IProgressDetailStorage _storage;
+        ICategoryStorage _categoryStorage;
         private readonly SynchronizationContext _syncContext;
         ObservableCollection<String> _categoryItems;
 
@@ -37,12 +38,14 @@ namespace Naklih.Com.Pomodoro
             InitializeComponent();
             findTimerResource();
             findStorageResource();
+
             _timer.TimerCompleted += _timer_TimerCompleted;
             _syncContext = SynchronizationContext.Current;
+            
+            _categoryStorage = new CategoryFileStorage();
             _categoryItems = getCategoryItems();
-            //cboCategory.ItemsSource = getCategoryItems();
-            //cboCategory.ItemBindingGroup.UpdateSources() 
-            cboCategory.SelectedIndex = 1;
+            
+            
         }
 
 
@@ -56,12 +59,7 @@ namespace Naklih.Com.Pomodoro
 
         private ObservableCollection<String> getCategoryItems()
         {
-            if(_categoryItems == null)
-            {
-                _categoryItems = new ObservableCollection< string> { "Office", "Home" };
-
-            }
-            return _categoryItems;
+            return new ObservableCollection<string>(_categoryStorage.RetrieveCategories());
         }
 
        
@@ -135,6 +133,7 @@ namespace Naklih.Com.Pomodoro
         }
 
 
+
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
 
@@ -179,6 +178,7 @@ namespace Naklih.Com.Pomodoro
 
         private void btnGo_Click(object sender, RoutedEventArgs e)
         {
+            _categoryStorage.StoreCategories(_categoryItems.ToList<String>());
             PomodoroDetailPopup.IsOpen = false;
             pomodoro();
             disableButtons();
@@ -201,16 +201,13 @@ namespace Naklih.Com.Pomodoro
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
             this.cboCategory.ActivateEditMode();
-            //this.cboCategory.IsEditable = true;
-            
-            
-           
         }
 
         private void BtnRemove_Click(object sender, RoutedEventArgs e)
         {
             this.cboCategory.IsEditable = false;
             _categoryItems.Remove(this.cboCategory.Text);
+            _categoryStorage.StoreCategories(_categoryItems.ToList<String>());
         }
 
        
