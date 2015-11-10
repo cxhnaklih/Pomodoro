@@ -60,10 +60,6 @@
       <Project>{afaaf1bf-8d91-4dca-8a47-a6cc0e81a342}</Project>
       <Name>Pomodoro.ClassLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PomodoroTest\Pomodoro.csproj">
-      <Project>{7f4da4fd-07f8-4667-80d8-1b68acdcef59}</Project>
-      <Name>Pomodoro</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
